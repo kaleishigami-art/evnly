@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>evnly — split smarter, travel together</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F6F6E9;
+    --yellow: #E8E6A5;
+    --black: #111111;
+    --white: #ffffff;
+    --gray-light: #f0f0e8;
+    --gray-mid: #d8d8c8;
+    --gray-dark: #888880;
+    --accent: #c8c84a;
+    --red: #e05050;
+    --green: #50b870;
+    --blue: #5090d8;
+    --orange: #e08840;
+    --purple: #9060c0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--cream);
+    color: var(--black);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .logo-text {
+    font-family: 'Quicksand', sans-serif;
+  }
+
+  /* ============ PAGES ============ */
+  .page { display: none; min-height: 100vh; flex-direction: column; }
+  .page.active { display: flex; }
+
+  /* ============ LOGO ============ */
+  .logo {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--black);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    color: var(--cream);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+  }
+  .logo-text {
+    font-size: 22px; font-weight: 700;
+    color: var(--black);
+  }
+
+  /* ============ TOPBAR ============ */
+  .topbar {
+    background: var(--white);
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar .logo-text { color: var(--cream); }
+  .topbar .logo-icon { background: var(--cream); color: var(--black); }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .icon-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 20px; padding: 4px;
+    transition: transform 0.2s;
+  }
+  .icon-btn:hover { transform: scale(1.15); }
+
+  /* ============ LANDING PAGE ============ */
+  #page-landing {
+    background: var(--cream);
+  }
+  .landing-hero {
+    padding: 48px 24px 32px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-pattern {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(circle, #E8E6A5 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.5;
+  }
+  .hero-logo {
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center;
+    background: var(--cream); border-radius: 16px;
+    padding: 12px 28px; gap: 10px; margin-bottom: 32px;
+  }
+  .hero-logo .logo-text { color: var(--cream); font-size: 32px; }
+  .hero-logo .logo-icon { width: 44px; height: 44px; font-size: 24px; background: var(--cream); color: var(--black); }
+  .hero-tagline {
+    position: relative; z-index: 1;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 28px; font-weight: 700;
+    color: var(--black);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .hero-sub {
+    position: relative; z-index: 1;
+    font-size: 15px; color: var(--gray-dark);
+    margin-bottom: 32px;
+  }
+  .btn-primary {
+    background: var(--yellow);
+    color: var(--black);
+    border: 2px solid var(--black);
+    border-radius: 100px;
+    padding: 16px 40px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 18px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    background: var(--black); color: var(--yellow);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--black);
+    border: 2px solid var(--black);
+    border-radius: 100px;
+    padding: 12px 28px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 16px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-secondary:hover { background: var(--black); color: var(--cream); }
+
+  .how-to {
+    padding: 32px 24px;
+    background: var(--white);
+    border-top: 2px solid var(--black);
+  }
+  .section-title {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .steps { display: flex; flex-direction: column; gap: 16px; }
+  .step {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px; background: var(--cream);
+    border-radius: 16px; border: 1.5px solid var(--gray-mid);
+  }
+  .step-num {
+    min-width: 32px; height: 32px;
+    background: var(--black); color: var(--cream);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 15px;
+  }
+  .step-title { font-family: 'Quicksand', sans-serif; font-weight: 700; margin-bottom: 4px; }
+  .step-desc { font-size: 13px; color: var(--gray-dark); }
+
+  .features-section {
+    padding: 32px 24px;
+    background: var(--black);
+    color: var(--cream);
+  }
+  .features-section .section-title { color: var(--yellow); }
+  .features-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .feature-card {
+    background: #222; border-radius: 12px;
+    padding: 14px; border: 1px solid #333;
+  }
+  .feature-icon { font-size: 24px; margin-bottom: 8px; }
+  .feature-name { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .feature-desc { font-size: 11px; color: #aaa; line-height: 1.4; }
+
+  .cta-section {
+    padding: 32px 24px;
+    text-align: center;
+    background: var(--yellow);
+    border-top: 2px solid var(--black);
+  }
+  .cta-section h2 { font-size: 22px; margin-bottom: 8px; }
+  .cta-section p { font-size: 14px; color: #555; margin-bottom: 20px; }
+
+  .footer {
+    padding: 20px 24px;
+    background: var(--black);
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+    border-top: 2px solid #333;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+  }
+  .footer a { color: #aaa; text-decoration: none; }
+
+  /* ============ CREATE TRIP ============ */
+  #page-create {
+    background: var(--cream);
+  }
+  .form-body { padding: 24px; flex: 1; }
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 14px;
+    margin-bottom: 8px; display: block;
+  }
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--black);
+    border-radius: 12px;
+    background: var(--white);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,230,165,0.4);
+  }
+
+  .members-list {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;
+  }
+  .member-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--black); color: var(--cream);
+    border-radius: 100px; padding: 6px 14px;
+    font-size: 13px; font-family: 'Quicksand', sans-serif; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .member-chip .member-avatar { font-size: 18px; }
+  .member-chip .remove-btn {
+    background: none; border: none; color: #aaa;
+    cursor: pointer; font-size: 16px; line-height: 1;
+    padding: 0; margin-left: 4px;
+  }
+  .member-chip .remove-btn:hover { color: var(--red); }
+
+  .add-member-row {
+    display: flex; gap: 8px;
+  }
+  .add-member-row .form-input { flex: 1; }
+
+  .currency-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 10px;
+  }
+  .currency-tag {
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 2px solid var(--black);
+    background: var(--white);
+    font-size: 13px; font-family: 'Quicksand', sans-serif; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .currency-tag.selected {
+    background: var(--yellow); border-color: var(--black);
+  }
+
+  .date-row { display: flex; gap: 10px; }
+  .date-row .form-input { flex: 1; }
+
+  .avatar-picker {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;
+  }
+  .avatar-opt {
+    width: 40px; height: 40px;
+    border-radius: 50%; border: 2px solid var(--gray-mid);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; cursor: pointer;
+    transition: all 0.15s;
+    background: var(--white);
+  }
+  .avatar-opt.selected, .avatar-opt:hover { border-color: var(--black); background: var(--yellow); }
+
+  .form-footer {
+    padding: 16px 24px 32px;
+  }
+
+  /* ============ SHARE PAGE ============ */
+  #page-share {
+    align-items: center; justify-content: center;
+    background: var(--white);
+  }
+  .share-content {
+    text-align: center; padding: 40px 24px;
+    max-width: 380px; width: 100%;
+  }
+  .share-check {
+    width: 80px; height: 80px;
+    background: var(--black); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; margin: 0 auto 24px;
+    color: var(--cream);
+  }
+  .share-title {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 24px; font-weight: 700; margin-bottom: 8px;
+  }
+  .share-sub { font-size: 14px; color: var(--gray-dark); margin-bottom: 28px; }
+  .link-box {
+    display: flex; align-items: center;
+    border: 2px solid var(--black); border-radius: 12px;
+    overflow: hidden; margin-bottom: 20px;
+    background: var(--cream);
+  }
+  .link-text {
+    flex: 1; padding: 12px 14px;
+    font-size: 13px; color: var(--gray-dark);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .copy-btn {
+    padding: 12px 16px;
+    background: var(--black); color: var(--cream);
+    border: none; cursor: pointer;
+    font-family: 'Quicksand', sans-serif; font-weight: 700;
+    font-size: 13px;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: #333; }
+
+  /* ============ TRIP DASHBOARD ============ */
+  #page-dashboard {
+    background: var(--cream);
+  }
+  .dash-header {
+    background: var(--black); color: var(--cream);
+    padding: 16px 20px 20px;
+  }
+  .trip-name-header {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--yellow); margin-bottom: 4px;
+  }
+  .trip-meta { font-size: 12px; color: #aaa; }
+  .member-avatars {
+    display: flex; gap: 6px; margin-top: 12px;
+  }
+  .m-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%; border: 2px solid var(--yellow);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; background: #222;
+  }
+
+  .tab-bar {
+    display: flex;
+    border-bottom: 2px solid var(--black);
+    background: var(--white);
+    position: sticky; top: 64px; z-index: 90;
+  }
+  .tab {
+    flex: 1; padding: 14px 8px;
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+    color: var(--gray-dark);
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .tab.active {
+    color: var(--black);
+    border-bottom-color: var(--black);
+  }
+
+  .tab-content { display: none; flex: 1; }
+  .tab-content.active { display: block; }
+
+  /* EXPENSES TAB */
+  .trip-stats-card {
+    margin: 16px; padding: 16px;
+    background: var(--yellow);
+    border-radius: 16px;
+    border: 2px solid var(--black);
+  }
+  .stats-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 15px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .wrap-btn {
+    background: var(--black); color: var(--yellow);
+    border: none; border-radius: 100px;
+    padding: 4px 12px; font-size: 11px;
+    font-family: 'Quicksand', sans-serif; font-weight: 700;
+    cursor: pointer;
+  }
+  .stats-layout {
+    display: flex; gap: 16px; align-items: center;
+  }
+  .pie-chart-wrap {
+    position: relative; flex-shrink: 0;
+  }
+  .pie-chart-wrap canvas { width: 100px !important; height: 100px !important; }
+  .pie-legend { flex: 1; }
+  .pie-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; margin-bottom: 5px;
+  }
+  .pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  .settle-section {
+    margin: 0 16px 16px;
+    padding: 14px 16px;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--gray-mid);
+  }
+  .settle-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 13px; margin-bottom: 10px; color: var(--gray-dark);
+  }
+  .settle-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; margin-bottom: 8px;
+  }
+  .settle-arrow { color: var(--gray-dark); margin: 0 4px; }
+  .settle-amount { font-weight: 700; color: var(--red); }
+
+  .expenses-list { padding: 0 16px 120px; }
+  .expenses-list-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 13px;
+    color: var(--gray-dark); margin-bottom: 12px;
+  }
+  .expense-item {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--gray-mid);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .expense-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .expense-emoji {
+    width: 40px; height: 40px;
+    border-radius: 10px; background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+    border: 1.5px solid var(--gray-mid);
+  }
+  .expense-info { flex: 1; min-width: 0; }
+  .expense-name {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 14px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .expense-meta { font-size: 11px; color: var(--gray-dark); margin-top: 2px; }
+  .expense-right { text-align: right; flex-shrink: 0; }
+  .expense-amount { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 15px; }
+  .expense-payers { display: flex; gap: 2px; margin-top: 4px; justify-content: flex-end; }
+  .payer-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--cream); border: 1.5px solid var(--gray-mid);
+    font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* FAB */
+  .fab-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 2px solid var(--black);
+    display: flex; align-items: center;
+    padding: 12px 24px 20px;
+    z-index: 200;
+    max-width: 480px; margin: 0 auto;
+  }
+  .fab-tab-btn {
+    flex: 1; text-align: center;
+    font-family: 'Quicksand', sans-serif; font-weight: 700;
+    font-size: 13px; padding: 8px;
+    cursor: pointer; background: none; border: none;
+    color: var(--gray-dark);
+    transition: color 0.15s;
+  }
+  .fab-tab-btn.active { color: var(--black); }
+  .fab-center {
+    width: 52px; height: 52px;
+    background: var(--yellow);
+    border: 2px solid var(--black);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 24px; font-weight: 700;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin: 0 12px;
+    flex-shrink: 0;
+  }
+  .fab-center:hover { transform: scale(1.1); background: var(--black); color: var(--yellow); }
+
+  /* ITINERARY TAB */
+  .itin-body { padding: 16px 16px 120px; }
+  .day-tabs {
+    display: flex; gap: 8px; overflow-x: auto;
+    padding-bottom: 12px; margin-bottom: 16px;
+    scrollbar-width: none;
+  }
+  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tab {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 2px solid var(--black);
+    font-family: 'Quicksand', sans-serif; font-weight: 700;
+    font-size: 13px; cursor: pointer;
+    background: var(--white);
+    transition: all 0.15s;
+  }
+  .day-tab.active { background: var(--black); color: var(--cream); }
+
+  .itin-events { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .itin-event {
+    background: var(--white);
+    border-radius: 12px; border: 1.5px solid var(--gray-mid);
+    padding: 12px 14px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .itin-time {
+    font-family: 'Quicksand', sans-serif; font-weight: 700;
+    font-size: 12px; color: var(--gray-dark);
+    min-width: 50px;
+  }
+  .itin-event-name { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 14px; }
+  .itin-event-loc { font-size: 12px; color: var(--gray-dark); margin-top: 2px; }
+  .itin-actions { margin-left: auto; display: flex; gap: 6px; }
+  .itin-icon-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 16px; opacity: 0.6; transition: opacity 0.15s;
+  }
+  .itin-icon-btn:hover { opacity: 1; }
+
+  .add-event-btn {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed var(--gray-mid);
+    border-radius: 12px;
+    background: transparent;
+    font-family: 'Quicksand', sans-serif; font-weight: 700;
+    font-size: 14px; color: var(--gray-dark);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .add-event-btn:hover { border-color: var(--black); color: var(--black); background: var(--white); }
+
+  /* ============ MODALS ============ */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 500;
+    display: none; align-items: flex-end; justify-content: center;
+    padding: 0;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: 24px 24px 0 0;
+    width: 100%; max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--gray-mid); border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+  .modal-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 20px; margin-bottom: 20px;
+  }
+  .modal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .btn-danger {
+    background: transparent; color: var(--red);
+    border: 2px solid var(--red);
+    border-radius: 100px; padding: 12px;
+    font-family: 'Quicksand', sans-serif; font-weight: 700;
+    font-size: 15px; cursor: pointer;
+    width: 100%; transition: all 0.15s;
+  }
+  .btn-danger:hover { background: var(--red); color: var(--white); }
+
+  .expense-type-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+    margin-bottom: 16px;
+  }
+  .type-btn {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px; padding: 10px 4px;
+    border: 2px solid var(--gray-mid);
+    border-radius: 12px; cursor: pointer;
+    background: var(--white); transition: all 0.15s;
+  }
+  .type-btn.selected { border-color: var(--black); background: var(--yellow); }
+  .type-btn span:first-child { font-size: 20px; }
+  .type-btn span:last-child { font-size: 10px; font-family: 'Quicksand', sans-serif; font-weight: 700; }
+
+  .who-grid {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .who-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid var(--gray-mid);
+    border-radius: 100px; cursor: pointer;
+    font-size: 13px; font-family: 'Quicksand', sans-serif; font-weight: 600;
+    background: var(--white); transition: all 0.15s;
+  }
+  .who-btn.selected { border-color: var(--black); background: var(--yellow); }
+
+  .amount-row {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .currency-select {
+    padding: 12px 14px;
+    border: 2px solid var(--black);
+    border-radius: 12px;
+    background: var(--white);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px; outline: none;
+    cursor: pointer;
+  }
+
+  /* ============ TRIP WRAP ============ */
+  #page-wrap {
+    background: var(--black);
+    color: var(--cream);
+  }
+  .wrap-header {
+    padding: 24px 20px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid #333;
+  }
+  .wrap-back {
+    background: none; border: none; cursor: pointer;
+    font-size: 20px; color: var(--cream);
+  }
+  .wrap-header h2 { font-family: 'Quicksand', sans-serif; font-size: 20px; color: var(--yellow); }
+
+  .wrap-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; padding-bottom: 40px; }
+
+  .wrap-card {
+    border-radius: 16px; padding: 20px;
+    border: 1px solid #333;
+  }
+  .wrap-card.yellow { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+  .wrap-card.dark { background: #1a1a1a; }
+  .wrap-card-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; opacity: 0.6; margin-bottom: 8px;
+  }
+  .wrap-card-value {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 32px; font-weight: 700;
+    line-height: 1.1;
+  }
+  .wrap-card-sub { font-size: 13px; opacity: 0.7; margin-top: 6px; }
+  .wrap-awards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .award-card {
+    background: #1a1a1a;
+    border-radius: 12px; padding: 14px;
+    border: 1px solid #333;
+  }
+  .award-emoji { font-size: 28px; margin-bottom: 8px; }
+  .award-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 13px; margin-bottom: 4px;
+    color: var(--yellow);
+  }
+  .award-name { font-size: 14px; font-weight: 600; }
+  .award-desc { font-size: 11px; color: #888; margin-top: 2px; }
+
+  /* ============ GAME PAGE ============ */
+  #page-game {
+    background: var(--cream);
+  }
+  .game-body { padding: 24px; text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .game-title {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 26px; font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .game-sub { font-size: 14px; color: var(--gray-dark); margin-bottom: 32px; }
+
+  .wheel-container {
+    position: relative; width: 240px; height: 240px;
+    margin: 0 auto 32px;
+  }
+  .wheel-canvas { border-radius: 50%; border: 4px solid var(--black); }
+  .wheel-arrow {
+    position: absolute; top: -16px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 32px; z-index: 10;
+  }
+  .wheel-result {
+    min-height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 22px; font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  /* ============ SETTINGS MODAL ============ */
+  .settings-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid var(--gray-light);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 14px; }
+  .settings-val { font-size: 13px; color: var(--gray-dark); }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--black); color: var(--cream);
+    padding: 10px 20px; border-radius: 100px;
+    font-size: 13px; font-family: 'Quicksand', sans-serif; font-weight: 700;
+    opacity: 0; transition: all 0.3s;
+    z-index: 1000; white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ============ UTILS ============ */
+  .hidden { display: none !important; }
+  .divider { height: 1px; background: var(--gray-light); margin: 12px 0; }
+  .text-muted { color: var(--gray-dark); font-size: 13px; }
+
+  /* Responsive max-width container */
+  body { max-width: 480px; margin: 0 auto; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: var(--gray-mid); border-radius: 2px; }
+
+  select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23111' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+</style>
+</head>
+<body>
+
+<!-- ====== LANDING PAGE ====== -->
+<div id="page-landing" class="page active">
+  <div class="landing-hero">
+    <div class="hero-pattern"></div>
+    <div class="hero-logo">
+      <div class="logo-icon">😊</div>
+      <span class="logo-text">evnly</span>
+    </div>
+    <h1 class="hero-tagline">Split smarter,<br>travel together.</h1>
+    <p class="hero-sub">No sign-up needed. Track expenses &amp; itineraries with your crew.</p>
+    <button class="btn-primary" onclick="goTo('page-create')">🚀 Start a Trip!</button>
+  </div>
+
+  <div class="how-to">
+    <div class="section-title">How to use Evnly</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Create a Group</div>
+          <div class="step-desc">Name your trip, add members, and set currencies.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Add Expenses</div>
+          <div class="step-desc">Tap "Add Expense," enter the amount, who paid, and who shares it.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Settle Up</div>
+          <div class="step-desc">See who owes whom and get a full summary by category.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features-section">
+    <div class="section-title">Why use Evnly?</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💸</div>
+        <div class="feature-name">Easy Bill Splitting</div>
+        <div class="feature-desc">Auto-calculates who owes whom.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔓</div>
+        <div class="feature-name">No Sign-Up</div>
+        <div class="feature-desc">Start instantly, share via link.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💱</div>
+        <div class="feature-name">Multi-Currency</div>
+        <div class="feature-desc">100+ currencies supported.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <div class="feature-name">Itinerary</div>
+        <div class="feature-desc">Plan your days, add locations.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎉</div>
+        <div class="feature-name">Trip Wrap</div>
+        <div class="feature-desc">Spotify-style trip summary.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎡</div>
+        <div class="feature-name">Lucky Wheel</div>
+        <div class="feature-desc">Spin to decide who pays next!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <h2>Ready for your next adventure?</h2>
+    <p>Create a free trip in 30 seconds.</p>
+    <button class="btn-primary" onclick="goTo('page-create')">Create a Group!</button>
+  </div>
+
+  <div class="footer">
+    <a href="#" onclick="showFooterModal('about')">About Us</a>
+    <a href="#" onclick="showFooterModal('privacy')">Privacy Policy</a>
+    <a href="#" onclick="showFooterModal('contact')">Contact Us</a>
+    <a href="#" onclick="showFooterModal('faq')">FAQ</a>
+  </div>
+</div>
+
+<!-- ====== CREATE TRIP ====== -->
+<div id="page-create" class="page">
+  <div class="topbar">
+    <div class="logo" onclick="goTo('page-landing')">
+      <div class="logo-icon">😊</div>
+      <span class="logo-text">evnly</span>
+    </div>
+    <button class="icon-btn" onclick="showLangModal()" title="Language">🌐</button>
+  </div>
+
+  <div class="form-body">
+    <h2 style="font-size:22px;margin-bottom:24px;">Create Your Trip</h2>
+
+    <div class="form-group">
+      <label class="form-label">Trip Name</label>
+      <input class="form-input" id="tripName" placeholder="e.g. Japan 2026 🗾" maxlength="40">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Members</label>
+      <div class="members-list" id="membersList"></div>
+      <div class="add-member-row">
+        <input class="form-input" id="memberInput" placeholder="Type a name..." maxlength="20" onkeydown="if(event.key==='Enter')addMember()">
+        <button class="btn-primary" style="padding:12px 20px;font-size:14px;" onclick="addMember()">+</button>
+      </div>
+      <div class="avatar-picker" id="avatarPicker" style="margin-top:12px;display:none;">
+        <div style="width:100%;font-size:12px;color:var(--gray-dark);margin-bottom:4px;font-family:'Quicksand',sans-serif;font-weight:700;">Pick an avatar:</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Currencies</label>
+      <div class="currency-tags" id="currencyTags"></div>
+      <select class="form-input" id="currencySelect" style="margin-top:10px;" onchange="addCurrency()">
+        <option value="">+ Add currency</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Trip Dates</label>
+      <div class="date-row">
+        <input class="form-input" id="dateStart" type="date">
+        <input class="form-input" id="dateEnd" type="date">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-footer">
+    <button class="btn-primary" style="width:100%;text-align:center;" onclick="startTrip()">🎒 Start Recording!</button>
+  </div>
+</div>
+
+<!-- ====== SHARE PAGE ====== -->
+<div id="page-share" class="page">
+  <div class="share-content">
+    <div class="share-check">✓</div>
+    <div class="share-title">Time to start recording<br>your trip! Have Fun! 🎉</div>
+    <div class="share-sub">Share this link with your group so everyone can log in.</div>
+    <div class="link-box">
+      <div class="link-text" id="shareLink">evnly.app/trip/abc123</div>
+      <button class="copy-btn" onclick="copyLink()">COPY</button>
+    </div>
+    <button class="btn-primary" style="width:100%;text-align:center;margin-bottom:12px;" onclick="goTo('page-dashboard')">Go to Trip Dashboard →</button>
+    <button class="btn-secondary" onclick="goTo('page-landing')">Home Page</button>
+  </div>
+</div>
+
+<!-- ====== TRIP DASHBOARD ====== -->
+<div id="page-dashboard" class="page">
+  <div class="topbar" id="dashTopbar">
+    <div class="logo" onclick="goTo('page-landing')">
+      <div class="logo-icon">😊</div>
+      <span class="logo-text">evnly</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="showLangModal()" title="Language">🌐</button>
+      <button class="icon-btn" onclick="showSettingsModal()" title="Settings">⚙️</button>
+    </div>
+  </div>
+
+  <div class="dash-header">
+    <div class="trip-name-header" id="dashTripName">Our Japan Trip 2026</div>
+    <div class="trip-meta" id="dashTripMeta">Loading...</div>
+    <div class="member-avatars" id="dashMemberAvatars"></div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab active" onclick="switchTab('expenses', this)">💰 Expenses</button>
+    <button class="tab" onclick="switchTab('itinerary', this)">🗓️ Itinerary</button>
+    <button class="tab" onclick="goTo('page-game')">🎡 Game</button>
+  </div>
+
+  <!-- EXPENSES TAB -->
+  <div class="tab-content active" id="tab-expenses">
+    <div class="trip-stats-card">
+      <div class="stats-title">
+        TRIP STATS
+        <button class="wrap-btn" onclick="goTo('page-wrap')">TRIP WRAPPED ✨</button>
+      </div>
+      <div class="stats-layout">
+        <div class="pie-chart-wrap">
+          <canvas id="pieChart" width="100" height="100"></canvas>
+        </div>
+        <div class="pie-legend" id="pieLegend"></div>
+      </div>
+    </div>
+
+    <div class="settle-section" id="settleSection">
+      <div class="settle-title">WHO OWES WHOM</div>
+      <div id="settleList"></div>
+    </div>
+
+    <div class="expenses-list">
+      <div class="expenses-list-title">RECENT EXPENSES</div>
+      <div id="expensesList"></div>
+    </div>
+  </div>
+
+  <!-- ITINERARY TAB -->
+  <div class="tab-content" id="tab-itinerary">
+    <div class="itin-body">
+      <div class="day-tabs" id="dayTabs"></div>
+      <div class="itin-events" id="itinEvents"></div>
+      <button class="add-event-btn" onclick="openAddEventModal()">+ Add New Event</button>
+    </div>
+  </div>
+
+  <!-- FAB bar -->
+  <div class="fab-bar">
+    <button class="fab-tab-btn active" id="fab-expenses-btn" onclick="switchTab('expenses',null);setFabActive('fab-expenses-btn')">$ Expenses</button>
+    <button class="fab-center" onclick="openAddModal()" title="Add Expense">
+      <span style="font-size:18px;font-weight:900;">+</span>
+    </button>
+    <button class="fab-tab-btn" id="fab-itin-btn" onclick="switchTab('itinerary',null);setFabActive('fab-itin-btn')">Itinerary</button>
+  </div>
+</div>
+
+<!-- ====== TRIP WRAP ====== -->
+<div id="page-wrap" class="page">
+  <div class="topbar">
+    <button class="wrap-back" onclick="goTo('page-dashboard')">←</button>
+    <h2 style="font-family:'Quicksand',sans-serif;font-size:20px;color:var(--yellow);">TRIP WRAPPED ✨</h2>
+    <div></div>
+  </div>
+  <div class="wrap-body" id="wrapBody"></div>
+</div>
+
+<!-- ====== GAME PAGE ====== -->
+<div id="page-game" class="page">
+  <div class="topbar">
+    <button class="wrap-back" onclick="goTo('page-dashboard')" style="color:var(--cream);">←</button>
+    <div class="logo">
+      <div class="logo-icon">😊</div>
+      <span class="logo-text" style="color:var(--cream);">evnly</span>
+    </div>
+    <div></div>
+  </div>
+  <div class="game-body">
+    <div class="game-title">👾 Let's Play! 👾</div>
+    <div class="game-sub">Who's paying next?</div>
+    <div class="wheel-container">
+      <div class="wheel-arrow">▼</div>
+      <canvas id="wheelCanvas" class="wheel-canvas" width="240" height="240"></canvas>
+    </div>
+    <div class="wheel-result" id="wheelResult">Spin the wheel!</div>
+    <button class="btn-primary" onclick="spinWheel()">🎯 SPIN THE WHEEL</button>
+  </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<!-- Add Expense Modal -->
+<div class="modal-overlay" id="modal-expense">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="expenseModalTitle">Input Expense</div>
+
+    <div class="form-group">
+      <label class="form-label">Type of Expense</label>
+      <div class="expense-type-grid" id="expenseTypeGrid"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Remark / Description</label>
+      <input class="form-input" id="expenseRemark" placeholder="e.g. Dinner at Ramen shop">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Who Paid?</label>
+      <div class="who-grid" id="whoPaidGrid"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Who Shares?</label>
+      <div class="who-grid" id="whoShareGrid"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Amount</label>
+      <div class="amount-row">
+        <select class="currency-select" id="expenseCurrency"></select>
+        <input class="form-input" id="expenseAmount" type="number" placeholder="0.00" style="flex:1;">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" style="width:100%;text-align:center;" onclick="saveExpense()">Save</button>
+      <button id="deleteExpenseBtn" class="btn-danger hidden" onclick="deleteExpense()">Delete</button>
+      <button class="btn-secondary" onclick="closeModal('modal-expense')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Event Modal -->
+<div class="modal-overlay" id="modal-event">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Add Event</div>
+    <div class="form-group">
+      <label class="form-label">Event Name</label>
+      <input class="form-input" id="eventName" placeholder="e.g. Temple Visit">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Time</label>
+      <input class="form-input" id="eventTime" type="time">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Address / Location</label>
+      <input class="form-input" id="eventAddr" placeholder="e.g. Kinkaku-ji, Kyoto">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" style="width:100%;text-align:center;" onclick="saveEvent()">Add</button>
+      <button id="deleteEventBtn" class="btn-danger hidden" onclick="deleteEvent()">Delete</button>
+      <button class="btn-secondary" onclick="closeModal('modal-event')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Group Settings</div>
+    <div id="settingsContent"></div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn-primary" style="width:100%;text-align:center;" onclick="saveSettings()">Save</button>
+      <button class="btn-secondary" onclick="closeModal('modal-settings')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Language Modal -->
+<div class="modal-overlay" id="modal-lang">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🌐 Select Language</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn-secondary" onclick="setLang('en')">🇬🇧 English</button>
+      <button class="btn-secondary" onclick="setLang('zh-TW')">🇹🇼 繁體中文</button>
+      <button class="btn-secondary" onclick="setLang('zh-CN')">🇨🇳 简体中文</button>
+      <button class="btn-secondary" onclick="setLang('ja')">🇯🇵 日本語</button>
+      <button class="btn-secondary" onclick="setLang('th')">🇹🇭 ภาษาไทย</button>
+      <button class="btn-secondary" onclick="setLang('ko')">🇰🇷 한국어</button>
+    </div>
+    <div style="margin-top:14px;">
+      <button class="btn-secondary" onclick="closeModal('modal-lang')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Modal -->
+<div class="modal-overlay" id="modal-footer">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="footerModalTitle"></div>
+    <div id="footerModalContent" style="font-size:14px;line-height:1.7;color:var(--gray-dark);"></div>
+    <div style="margin-top:20px;">
+      <button class="btn-secondary" onclick="closeModal('modal-footer')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===============================
+//  STATE
+// ===============================
+let trip = JSON.parse(localStorage.getItem('evnly_trip') || 'null');
+let currentExpenseId = null;
+let currentEventId = null;
+let currentDay = 0;
+let wheelSpinning = false;
+
+const AVATARS = ['🐠','🐗','🐘','🦋','🦊','🐼','🐸','🐙','🦁','🐯','🐺','🦄','🐬','🦩','🐓','🦔'];
+const CURRENCIES = [
+  'HKD','JPY','USD','THB','KRW','EUR','GBP','TWD','SGD','AUD','CNY','MYR','PHP','VND','IDR','INR','CAD','CHF','NZD','AED'
+];
+const EXPENSE_TYPES = [
+  {id:'food', emoji:'🍜', label:'Food'},
+  {id:'transport', emoji:'🚌', label:'Transport'},
+  {id:'hotel', emoji:'🏨', label:'Hotel'},
+  {id:'shopping', emoji:'🛍️', label:'Shopping'},
+  {id:'other', emoji:'📦', label:'Other'},
+];
+const CAT_COLORS = {food:'#e08840', transport:'#5090d8', hotel:'#9060c0', shopping:'#e05050', other:'#888'};
+
+// ===============================
+//  NAVIGATION
+// ===============================
+function goTo(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  window.scrollTo(0,0);
+  if (pageId === 'page-dashboard') renderDashboard();
+  if (pageId === 'page-wrap') renderWrap();
+  if (pageId === 'page-game') renderWheel();
+}
+
+// ===============================
+//  CREATE TRIP
+// ===============================
+let pendingMembers = [];
+let selectedAvatar = AVATARS[0];
+let pickerMemberIdx = null;
+
+function initCreatePage() {
+  // Populate currency select
+  const sel = document.getElementById('currencySelect');
+  CURRENCIES.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    sel.appendChild(o);
+  });
+  pendingMembers = [];
+  renderMembersList();
+  // Default currencies
+  trip = trip || { currencies: ['HKD'], members: [], expenses: [], itinerary: {}, name: '', dateStart: '', dateEnd: '' };
+  renderCurrencyTags();
+}
+
+function addMember() {
+  const input = document.getElementById('memberInput');
+  const name = input.value.trim();
+  if (!name) return;
+  if (pendingMembers.find(m => m.name.toLowerCase() === name.toLowerCase())) {
+    showToast('Name already added!'); return;
+  }
+  // Show avatar picker
+  pickerMemberIdx = pendingMembers.length;
+  pendingMembers.push({ name, avatar: AVATARS[pendingMembers.length % AVATARS.length] });
+  input.value = '';
+  renderMembersList();
+  renderAvatarPicker(pendingMembers.length - 1);
+}
+
+function renderAvatarPicker(idx) {
+  const picker = document.getElementById('avatarPicker');
+  picker.innerHTML = `<div style="width:100%;font-size:12px;color:var(--gray-dark);margin-bottom:8px;font-family:'Quicksand',sans-serif;font-weight:700;">Pick avatar for <b>${pendingMembers[idx].name}</b>:</div>`;
+  AVATARS.forEach((a, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'avatar-opt' + (pendingMembers[idx].avatar === a ? ' selected' : '');
+    btn.textContent = a;
+    btn.onclick = () => {
+      pendingMembers[idx].avatar = a;
+      renderMembersList();
+      renderAvatarPicker(idx);
+    };
+    picker.appendChild(btn);
+  });
+  picker.style.display = 'flex';
+}
+
+function removeMember(idx) {
+  pendingMembers.splice(idx, 1);
+  document.getElementById('avatarPicker').style.display = 'none';
+  renderMembersList();
+}
+
+function renderMembersList() {
+  const list = document.getElementById('membersList');
+  list.innerHTML = '';
+  pendingMembers.forEach((m, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'member-chip';
+    chip.innerHTML = `<span class="member-avatar">${m.avatar}</span>${m.name}<button class="remove-btn" onclick="removeMember(${i})">×</button>`;
+    list.appendChild(chip);
+  });
+}
+
+function addCurrency() {
+  const sel = document.getElementById('currencySelect');
+  const val = sel.value;
+  if (!val) return;
+  if (!trip.currencies) trip.currencies = [];
+  if (!trip.currencies.includes(val)) {
+    trip.currencies.push(val);
+    renderCurrencyTags();
+  }
+  sel.value = '';
+}
+
+function renderCurrencyTags() {
+  const tags = document.getElementById('currencyTags');
+  tags.innerHTML = '';
+  (trip.currencies || ['HKD']).forEach(c => {
+    const tag = document.createElement('div');
+    tag.className = 'currency-tag selected';
+    tag.innerHTML = `${c} <span onclick="removeCurrency('${c}')" style="cursor:pointer;margin-left:4px;opacity:0.6;">×</span>`;
+    tags.appendChild(tag);
+  });
+}
+
+function removeCurrency(c) {
+  trip.currencies = trip.currencies.filter(x => x !== c);
+  renderCurrencyTags();
+}
+
+function startTrip() {
+  const name = document.getElementById('tripName').value.trim();
+  if (!name) { showToast('Please enter a trip name!'); return; }
+  if (pendingMembers.length < 1) { showToast('Add at least 1 member!'); return; }
+
+  trip = {
+    id: 'trip_' + Date.now(),
+    name,
+    members: pendingMembers.map(m => ({...m, id: 'mem_'+Math.random().toString(36).slice(2)})),
+    currencies: trip.currencies || ['HKD'],
+    dateStart: document.getElementById('dateStart').value,
+    dateEnd: document.getElementById('dateEnd').value,
+    expenses: [],
+    itinerary: {}
+  };
+  saveTrip();
+  generateShareLink();
+  goTo('page-share');
+}
+
+function generateShareLink() {
+  const id = trip.id;
+  document.getElementById('shareLink').textContent = `evnly.app/trip/${id}`;
+}
+
+function copyLink() {
+  const text = document.getElementById('shareLink').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('Link copied! 📋'));
+}
+
+// ===============================
+//  DASHBOARD
+// ===============================
+function renderDashboard() {
+  if (!trip) return;
+  document.getElementById('dashTripName').textContent = trip.name;
+
+  let meta = '';
+  if (trip.dateStart) meta += formatDate(trip.dateStart);
+  if (trip.dateEnd) meta += ' – ' + formatDate(trip.dateEnd);
+  if (trip.currencies) meta += (meta ? ' · ' : '') + trip.currencies.join(', ');
+  document.getElementById('dashTripMeta').textContent = meta;
+
+  const avatarEl = document.getElementById('dashMemberAvatars');
+  avatarEl.innerHTML = trip.members.map(m =>
+    `<div class="m-avatar" title="${m.name}">${m.avatar}</div>`
+  ).join('');
+
+  renderExpensesTab();
+  renderItineraryTab();
+}
+
+function renderExpensesTab() {
+  renderPieChart();
+  renderSettlements();
+  renderExpensesList();
+}
+
+function renderPieChart() {
+  const canvas = document.getElementById('pieChart');
+  const ctx = canvas.getContext('2d');
+  const legend = document.getElementById('pieLegend');
+  const expenses = trip.expenses || [];
+
+  // Aggregate by category
+  const cats = {};
+  expenses.forEach(e => {
+    cats[e.type] = (cats[e.type] || 0) + e.amount;
+  });
+
+  const total = Object.values(cats).reduce((a,b) => a+b, 0);
+  ctx.clearRect(0, 0, 100, 100);
+
+  if (total === 0) {
+    ctx.fillStyle = '#e0e0d0';
+    ctx.beginPath(); ctx.arc(50,50,46,0,Math.PI*2); ctx.fill();
+    legend.innerHTML = '<div style="font-size:12px;color:#888;">No expenses yet</div>';
+    return;
+  }
+
+  let startAngle = -Math.PI/2;
+  const entries = Object.entries(cats);
+  entries.forEach(([cat, val]) => {
+    const slice = (val/total) * Math.PI * 2;
+    ctx.fillStyle = CAT_COLORS[cat] || '#888';
+    ctx.beginPath();
+    ctx.moveTo(50,50);
+    ctx.arc(50,50,46,startAngle,startAngle+slice);
+    ctx.closePath(); ctx.fill();
+    startAngle += slice;
+  });
+
+  // Center hole
+  ctx.fillStyle = '#E8E6A5';
+  ctx.beginPath(); ctx.arc(50,50,20,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#111';
+  ctx.font = 'bold 9px Quicksand';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(formatCurrency(total, trip.currencies[0] || 'HKD'), 50, 50);
+
+  legend.innerHTML = entries.map(([cat, val]) => {
+    const type = EXPENSE_TYPES.find(t => t.id === cat);
+    return `<div class="pie-item">
+      <div class="pie-dot" style="background:${CAT_COLORS[cat]}"></div>
+      <span>${type ? type.emoji + ' ' + type.label : cat}: ${formatCurrency(val, trip.currencies[0])} (${Math.round(val/total*100)}%)</span>
+    </div>`;
+  }).join('');
+}
+
+function renderSettlements() {
+  const expenses = trip.expenses || [];
+  const members = trip.members || [];
+  const balances = {};
+  members.forEach(m => balances[m.id] = 0);
+
+  expenses.forEach(e => {
+    const paidById = e.paidBy;
+    const shareIds = e.sharedBy || [];
+    if (shareIds.length === 0) return;
+    const perPerson = e.amount / shareIds.length;
+    balances[paidById] = (balances[paidById] || 0) + e.amount;
+    shareIds.forEach(sid => {
+      balances[sid] = (balances[sid] || 0) - perPerson;
+    });
+  });
+
+  // Settle
+  const settlements = [];
+  const debtors = members.filter(m => (balances[m.id]||0) < -0.01);
+  const creditors = members.filter(m => (balances[m.id]||0) > 0.01);
+  debtors.forEach(d => {
+    let debt = Math.abs(balances[d.id]);
+    creditors.forEach(c => {
+      if (debt < 0.01) return;
+      const credit = balances[c.id];
+      if (credit <= 0) return;
+      const amount = Math.min(debt, credit);
+      settlements.push({ from: d, to: c, amount });
+      debt -= amount;
+    });
+  });
+
+  const settleList = document.getElementById('settleList');
+  const currency = trip.currencies[0] || 'HKD';
+  if (settlements.length === 0) {
+    settleList.innerHTML = '<div class="text-muted">All settled up! 🎉</div>';
+  } else {
+    settleList.innerHTML = settlements.map(s =>
+      `<div class="settle-row">
+        <span>${s.from.avatar} ${s.from.name}</span>
+        <span class="settle-arrow">→</span>
+        <span>${s.to.avatar} ${s.to.name}</span>
+        <span class="settle-amount">${formatCurrency(s.amount, currency)}</span>
+      </div>`
+    ).join('');
+  }
+}
+
+function renderExpensesList() {
+  const list = document.getElementById('expensesList');
+  const expenses = [...(trip.expenses||[])].reverse();
+  const currency = trip.currencies[0] || 'HKD';
+  if (expenses.length === 0) {
+    list.innerHTML = '<div class="text-muted" style="text-align:center;padding:24px;">No expenses yet.<br>Tap + to add one!</div>';
+    return;
+  }
+  list.innerHTML = expenses.map(e => {
+    const type = EXPENSE_TYPES.find(t => t.id === e.type);
+    const payer = trip.members.find(m => m.id === e.paidBy);
+    const sharers = (e.sharedBy||[]).map(sid => trip.members.find(m=>m.id===sid)).filter(Boolean);
+    return `<div class="expense-item" onclick="openEditExpense('${e.id}')">
+      <div class="expense-emoji">${type ? type.emoji : '📦'}</div>
+      <div class="expense-info">
+        <div class="expense-name">${e.remark || (type ? type.label : 'Expense')}</div>
+        <div class="expense-meta">${payer ? payer.avatar + ' ' + payer.name + ' paid' : ''} · ${e.date || ''}</div>
+      </div>
+      <div class="expense-right">
+        <div class="expense-amount">${formatCurrency(e.amount, e.currency || currency)}</div>
+        <div class="expense-payers">${sharers.slice(0,3).map(s=>`<div class="payer-dot">${s.avatar}</div>`).join('')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===============================
+//  ADD/EDIT EXPENSE MODAL
+// ===============================
+let expenseType = 'food';
+let expensePayer = null;
+let expenseSharers = [];
+
+function openAddModal() {
+  currentExpenseId = null;
+  expenseType = 'food';
+  expensePayer = trip.members[0]?.id || null;
+  expenseSharers = trip.members.map(m => m.id);
+  document.getElementById('expenseRemark').value = '';
+  document.getElementById('expenseAmount').value = '';
+  document.getElementById('expenseModalTitle').textContent = 'Add Expense';
+  document.getElementById('deleteExpenseBtn').classList.add('hidden');
+  renderExpenseTypeGrid();
+  renderWhoPaidGrid();
+  renderWhoShareGrid();
+  renderExpenseCurrencySelect();
+  openModal('modal-expense');
+}
+
+function openEditExpense(id) {
+  const e = trip.expenses.find(ex => ex.id === id);
+  if (!e) return;
+  currentExpenseId = id;
+  expenseType = e.type;
+  expensePayer = e.paidBy;
+  expenseSharers = [...(e.sharedBy||[])];
+  document.getElementById('expenseRemark').value = e.remark || '';
+  document.getElementById('expenseAmount').value = e.amount;
+  document.getElementById('expenseModalTitle').textContent = 'Edit Expense';
+  document.getElementById('deleteExpenseBtn').classList.remove('hidden');
+  renderExpenseTypeGrid();
+  renderWhoPaidGrid();
+  renderWhoShareGrid();
+  renderExpenseCurrencySelect(e.currency);
+  openModal('modal-expense');
+}
+
+function renderExpenseTypeGrid() {
+  const grid = document.getElementById('expenseTypeGrid');
+  grid.innerHTML = EXPENSE_TYPES.map(t =>
+    `<div class="type-btn${expenseType===t.id?' selected':''}" onclick="selectType('${t.id}')">
+      <span>${t.emoji}</span><span>${t.label}</span>
+    </div>`
+  ).join('');
+}
+
+function selectType(id) { expenseType = id; renderExpenseTypeGrid(); }
+
+function renderWhoPaidGrid() {
+  const grid = document.getElementById('whoPaidGrid');
+  grid.innerHTML = trip.members.map(m =>
+    `<div class="who-btn${expensePayer===m.id?' selected':''}" onclick="selectPayer('${m.id}')">
+      <span>${m.avatar}</span><span>${m.name}</span>
+    </div>`
+  ).join('');
+}
+
+function selectPayer(id) { expensePayer = id; renderWhoPaidGrid(); }
+
+function renderWhoShareGrid() {
+  const grid = document.getElementById('whoShareGrid');
+  grid.innerHTML = trip.members.map(m =>
+    `<div class="who-btn${expenseSharers.includes(m.id)?' selected':''}" onclick="toggleSharer('${m.id}')">
+      <span>${m.avatar}</span><span>${m.name}</span>
+    </div>`
+  ).join('');
+}
+
+function toggleSharer(id) {
+  if (expenseSharers.includes(id)) {
+    expenseSharers = expenseSharers.filter(x => x !== id);
+  } else {
+    expenseSharers.push(id);
+  }
+  renderWhoShareGrid();
+}
+
+function renderExpenseCurrencySelect(selected) {
+  const sel = document.getElementById('expenseCurrency');
+  sel.innerHTML = (trip.currencies || ['HKD']).map(c =>
+    `<option value="${c}"${(selected||trip.currencies[0])===c?' selected':''}>${c}</option>`
+  ).join('');
+}
+
+function saveExpense() {
+  const amount = parseFloat(document.getElementById('expenseAmount').value);
+  if (!amount || amount <= 0) { showToast('Enter a valid amount!'); return; }
+  if (!expensePayer) { showToast('Select who paid!'); return; }
+  if (expenseSharers.length === 0) { showToast('Select who shares!'); return; }
+
+  const currency = document.getElementById('expenseCurrency').value;
+  const remark = document.getElementById('expenseRemark').value.trim();
+
+  if (currentExpenseId) {
+    const idx = trip.expenses.findIndex(e => e.id === currentExpenseId);
+    if (idx > -1) {
+      trip.expenses[idx] = {...trip.expenses[idx], type: expenseType, remark, paidBy: expensePayer, sharedBy: expenseSharers, amount, currency};
+    }
+  } else {
+    trip.expenses.push({
+      id: 'exp_'+Date.now(),
+      type: expenseType, remark,
+      paidBy: expensePayer, sharedBy: expenseSharers,
+      amount, currency,
+      date: new Date().toLocaleDateString()
+    });
+  }
+  saveTrip();
+  closeModal('modal-expense');
+  renderExpensesTab();
+  showToast(currentExpenseId ? 'Expense updated! ✅' : 'Expense added! ✅');
+}
+
+function deleteExpense() {
+  if (!currentExpenseId) return;
+  trip.expenses = trip.expenses.filter(e => e.id !== currentExpenseId);
+  saveTrip();
+  closeModal('modal-expense');
+  renderExpensesTab();
+  showToast('Expense deleted');
+}
+
+// ===============================
+//  ITINERARY
+// ===============================
+function renderItineraryTab() {
+  if (!trip) return;
+  const dayTabs = document.getElementById('dayTabs');
+  const itinEvents = document.getElementById('itinEvents');
+
+  // Generate days from dates
+  const days = getTripDays();
+
+  dayTabs.innerHTML = days.map((d, i) =>
+    `<button class="day-tab${i===currentDay?' active':''}" onclick="selectDay(${i})">${d}</button>`
+  ).join('');
+
+  const dayKey = days[currentDay] || 'Day 1';
+  const events = (trip.itinerary[dayKey] || []).sort((a,b) => a.time.localeCompare(b.time));
+
+  if (events.length === 0) {
+    itinEvents.innerHTML = '<div class="text-muted" style="text-align:center;padding:16px;">No events for this day yet.</div>';
+  } else {
+    itinEvents.innerHTML = events.map(ev =>
+      `<div class="itin-event">
+        <div class="itin-time">${ev.time || '--:--'}</div>
+        <div style="flex:1;">
+          <div class="itin-event-name">${ev.name}</div>
+          ${ev.addr ? `<div class="itin-event-loc">📍 ${ev.addr}</div>` : ''}
+        </div>
+        <div class="itin-actions">
+          ${ev.addr ? `<button class="itin-icon-btn" onclick="openGoogleMaps('${encodeURIComponent(ev.addr)}')">🗺️</button>` : ''}
+          <button class="itin-icon-btn" onclick="openEditEvent('${dayKey}','${ev.id}')">✏️</button>
+        </div>
+      </div>`
+    ).join('');
+  }
+}
+
+function getTripDays() {
+  if (trip.dateStart && trip.dateEnd) {
+    const start = new Date(trip.dateStart);
+    const end = new Date(trip.dateEnd);
+    const days = [];
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+      days.push(d.toLocaleDateString('en-GB', {month:'short', day:'numeric'}));
+    }
+    return days.length > 0 ? days : ['Day 1'];
+  }
+  // Fallback: generate days from itinerary keys or default
+  const keys = Object.keys(trip.itinerary || {});
+  return keys.length > 0 ? keys : ['Day 1','Day 2','Day 3'];
+}
+
+function selectDay(i) {
+  currentDay = i;
+  renderItineraryTab();
+}
+
+function openAddEventModal() {
+  currentEventId = null;
+  document.getElementById('eventName').value = '';
+  document.getElementById('eventTime').value = '';
+  document.getElementById('eventAddr').value = '';
+  document.getElementById('deleteEventBtn').classList.add('hidden');
+  openModal('modal-event');
+}
+
+function openEditEvent(dayKey, eventId) {
+  const events = trip.itinerary[dayKey] || [];
+  const ev = events.find(e => e.id === eventId);
+  if (!ev) return;
+  currentEventId = eventId;
+  document.getElementById('eventName').value = ev.name;
+  document.getElementById('eventTime').value = ev.time;
+  document.getElementById('eventAddr').value = ev.addr || '';
+  document.getElementById('deleteEventBtn').classList.remove('hidden');
+  document.getElementById('deleteEventBtn').onclick = () => deleteEvent(dayKey, eventId);
+  openModal('modal-event');
+}
+
+function saveEvent() {
+  const name = document.getElementById('eventName').value.trim();
+  if (!name) { showToast('Enter an event name!'); return; }
+  const time = document.getElementById('eventTime').value;
+  const addr = document.getElementById('eventAddr').value.trim();
+  const days = getTripDays();
+  const dayKey = days[currentDay] || 'Day 1';
+
+  if (!trip.itinerary[dayKey]) trip.itinerary[dayKey] = [];
+
+  if (currentEventId) {
+    const idx = trip.itinerary[dayKey].findIndex(e => e.id === currentEventId);
+    if (idx > -1) trip.itinerary[dayKey][idx] = {...trip.itinerary[dayKey][idx], name, time, addr};
+  } else {
+    trip.itinerary[dayKey].push({ id: 'ev_'+Date.now(), name, time, addr });
+  }
+  saveTrip();
+  closeModal('modal-event');
+  renderItineraryTab();
+  showToast('Event saved! 🗓️');
+}
+
+function deleteEvent(dayKey, eventId) {
+  if (!dayKey) {
+    const days = getTripDays();
+    dayKey = days[currentDay] || 'Day 1';
+    eventId = currentEventId;
+  }
+  if (trip.itinerary[dayKey]) {
+    trip.itinerary[dayKey] = trip.itinerary[dayKey].filter(e => e.id !== eventId);
+  }
+  saveTrip();
+  closeModal('modal-event');
+  renderItineraryTab();
+  showToast('Event deleted');
+}
+
+function openGoogleMaps(addr) {
+  window.open(`https://maps.google.com/?q=${addr}`, '_blank');
+}
+
+// ===============================
+//  TRIP WRAP
+// ===============================
+function renderWrap() {
+  if (!trip) return;
+  const expenses = trip.expenses || [];
+  const members = trip.members || [];
+  const currency = trip.currencies[0] || 'HKD';
+
+  const total = expenses.reduce((a,e) => a+e.amount, 0);
+
+  // Big spender
+  const spent = {};
+  members.forEach(m => spent[m.id] = 0);
+  expenses.forEach(e => spent[e.paidBy] = (spent[e.paidBy]||0) + e.amount);
+  const bigSpenderId = Object.entries(spent).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const bigSpender = members.find(m => m.id === bigSpenderId);
+
+  // Top category
+  const cats = {};
+  expenses.forEach(e => cats[e.type] = (cats[e.type]||0) + e.amount);
+  const topCat = Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
+  const topCatType = EXPENSE_TYPES.find(t => topCat && t.id === topCat[0]);
+
+  // Most expensive
+  const mostExp = [...expenses].sort((a,b)=>b.amount-a.amount)[0];
+  const mostExpPayer = mostExp ? members.find(m => m.id === mostExp.paidBy) : null;
+
+  // Night owl (expenses without time we'll simulate)
+  const nightOwl = members[Math.floor(Math.random() * members.length)];
+
+  // Michelin guide (most food spending)
+  const foodSpent = {};
+  members.forEach(m => foodSpent[m.id] = 0);
+  expenses.filter(e => e.type === 'food').forEach(e => foodSpent[e.paidBy] = (foodSpent[e.paidBy]||0)+e.amount);
+  const michelinId = Object.entries(foodSpent).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const michelin = members.find(m => m.id === michelinId);
+
+  const body = document.getElementById('wrapBody');
+  body.innerHTML = `
+    <div class="wrap-card yellow">
+      <div class="wrap-card-label">YOUR TRIP</div>
+      <div style="font-family:'Quicksand',sans-serif;font-size:28px;font-weight:700;">${trip.name}</div>
+      <div style="font-size:13px;margin-top:6px;opacity:0.7;">${members.map(m=>m.avatar+' '+m.name).join(' · ')}</div>
+    </div>
+
+    <div class="wrap-card dark">
+      <div class="wrap-card-label">TOTAL SPENT</div>
+      <div class="wrap-card-value">${formatCurrency(total, currency)}</div>
+      <div class="wrap-card-sub">across ${expenses.length} expense${expenses.length!==1?'s':''}</div>
+    </div>
+
+    ${bigSpender ? `
+    <div class="wrap-card dark">
+      <div class="wrap-card-label">💰 BIG SPENDER</div>
+      <div class="wrap-card-value">${bigSpender.avatar} ${bigSpender.name}</div>
+      <div class="wrap-card-sub">Paid ${formatCurrency(spent[bigSpender.id], currency)} in total (deep pockets!)</div>
+    </div>` : ''}
+
+    ${topCatType ? `
+    <div class="wrap-card dark">
+      <div class="wrap-card-label">🍕 TOP CATEGORY</div>
+      <div class="wrap-card-value">${topCatType.emoji} ${topCatType.label}</div>
+      <div class="wrap-card-sub">${Math.round(topCat[1]/total*100)}% of total budget — ${formatCurrency(topCat[1], currency)}</div>
+    </div>` : ''}
+
+    ${mostExp ? `
+    <div class="wrap-card dark">
+      <div class="wrap-card-label">💎 MOST EXPENSIVE MOMENT</div>
+      <div class="wrap-card-value">${formatCurrency(mostExp.amount, currency)}</div>
+      <div class="wrap-card-sub">${mostExp.remark || 'Unnamed expense'}${mostExpPayer ? ' — paid by ' + mostExpPayer.name : ''}</div>
+    </div>` : ''}
+
+    <div style="font-family:'Quicksand',sans-serif;font-weight:700;font-size:16px;color:var(--yellow);margin-top:8px;">🏆 AWARDS</div>
+    <div class="wrap-awards">
+      ${bigSpender ? `<div class="award-card">
+        <div class="award-emoji">🏧</div>
+        <div class="award-title">"ATM"</div>
+        <div class="award-name">${bigSpender.avatar} ${bigSpender.name}</div>
+        <div class="award-desc">Most total payments</div>
+      </div>` : ''}
+      ${michelin ? `<div class="award-card">
+        <div class="award-emoji">🍽️</div>
+        <div class="award-title">"Michelin Guide"</div>
+        <div class="award-name">${michelin.avatar} ${michelin.name}</div>
+        <div class="award-desc">Top food spender</div>
+      </div>` : ''}
+      ${nightOwl ? `<div class="award-card">
+        <div class="award-emoji">🦉</div>
+        <div class="award-title">"Night Owl"</div>
+        <div class="award-name">${nightOwl.avatar} ${nightOwl.name}</div>
+        <div class="award-desc">The last one up</div>
+      </div>` : ''}
+      ${members.length > 1 ? `<div class="award-card">
+        <div class="award-emoji">👑</div>
+        <div class="award-title">"Mileage King"</div>
+        <div class="award-name">${members[0].avatar} ${members[0].name}</div>
+        <div class="award-desc">Longest distance traveled</div>
+      </div>` : ''}
+    </div>
+  `;
+}
+
+// ===============================
+//  LUCKY WHEEL GAME
+// ===============================
+function renderWheel() {
+  if (!trip || !trip.members || trip.members.length === 0) return;
+  const canvas = document.getElementById('wheelCanvas');
+  const ctx = canvas.getContext('2d');
+  drawWheel(ctx, 0);
+}
+
+const WHEEL_COLORS = ['#E8E6A5','#5090d8','#e08840','#9060c0','#e05050','#50b870','#888','#111'];
+
+function drawWheel(ctx, rotation) {
+  const members = trip.members || [];
+  const cx = 120, cy = 120, r = 116;
+  ctx.clearRect(0, 0, 240, 240);
+  const slice = (Math.PI * 2) / members.length;
+  members.forEach((m, i) => {
+    ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, rotation + i * slice, rotation + (i+1) * slice);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rotation + i * slice + slice/2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = i % 2 === 0 ? '#111' : '#fff';
+    ctx.font = 'bold 13px Quicksand, sans-serif';
+    ctx.fillText(m.avatar + ' ' + m.name, r - 8, 5);
+    ctx.restore();
+  });
+  // Center
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(cx,cy,18,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#111';
+  ctx.font = 'bold 10px Quicksand, sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('SPIN', cx, cy);
+}
+
+let wheelAngle = 0;
+function spinWheel() {
+  if (wheelSpinning) return;
+  if (!trip.members || trip.members.length === 0) { showToast('Add members first!'); return; }
+  wheelSpinning = true;
+  document.getElementById('wheelResult').textContent = '🎡 Spinning...';
+  const canvas = document.getElementById('wheelCanvas');
+  const ctx = canvas.getContext('2d');
+  const totalSpin = Math.PI * 2 * (5 + Math.random() * 5);
+  const duration = 4000;
+  const start = performance.now();
+  const startAngle = wheelAngle;
+
+  function animate(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 4);
+    wheelAngle = startAngle + totalSpin * ease;
+    drawWheel(ctx, wheelAngle);
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      wheelSpinning = false;
+      // Determine winner (arrow at top = -PI/2)
+      const members = trip.members;
+      const slice = (Math.PI * 2) / members.length;
+      const normalized = (((-wheelAngle - Math.PI/2) % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+      const winnerIdx = Math.floor(normalized / slice) % members.length;
+      const winner = members[winnerIdx];
+      document.getElementById('wheelResult').textContent = `🎉 ${winner.avatar} ${winner.name} pays next!`;
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+// ===============================
+//  SETTINGS MODAL
+// ===============================
+function showSettingsModal() {
+  const content = document.getElementById('settingsContent');
+  content.innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Trip Name</label>
+      <input class="form-input" id="settingsTripName" value="${trip.name}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Trip Dates</label>
+      <div class="date-row">
+        <input class="form-input" id="settingsDateStart" type="date" value="${trip.dateStart||''}">
+        <input class="form-input" id="settingsDateEnd" type="date" value="${trip.dateEnd||''}">
+      </div>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Members</div>
+        <div class="settings-val">${trip.members.map(m=>m.avatar+' '+m.name).join(', ')}</div>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Currencies</div>
+        <div class="settings-val">${(trip.currencies||[]).join(', ')}</div>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Share Link</div>
+        <div class="settings-val" style="word-break:break-all;">evnly.app/trip/${trip.id}</div>
+      </div>
+      <button class="copy-btn" style="border-radius:8px;" onclick="copyLink();showToast('Link copied!')">COPY</button>
+    </div>
+  `;
+  openModal('modal-settings');
+}
+
+function saveSettings() {
+  trip.name = document.getElementById('settingsTripName').value.trim() || trip.name;
+  trip.dateStart = document.getElementById('settingsDateStart').value;
+  trip.dateEnd = document.getElementById('settingsDateEnd').value;
+  saveTrip();
+  closeModal('modal-settings');
+  renderDashboard();
+  showToast('Settings saved! ✅');
+}
+
+// ===============================
+//  FOOTER MODALS
+// ===============================
+const footerContent = {
+  about: {
+    title: 'About Us',
+    content: 'Evnly is a no-login group expense tracker and travel companion built for friends who love to travel together. We believe splitting bills should be easy, fair, and even a little fun. No accounts, no hassle — just start a trip and go.'
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    content: 'Evnly stores all trip data locally on your device using browser storage. We do not collect personal information or send your data to external servers. Your trip data is private and accessible only through your browser.'
+  },
+  contact: {
+    title: 'Contact Us',
+    content: 'Have feedback or questions? We\'d love to hear from you!\n\n📧 hello@evnly.app\n\nWe\'ll get back to you as soon as possible.'
+  },
+  faq: {
+    title: 'FAQ',
+    content: `Q: Do I need to sign up?\nA: No! Just create a trip and go.\n\nQ: How do I share with friends?\nA: Copy the trip link and send it to your group.\n\nQ: Is my data saved?\nA: Yes, your data is saved locally in your browser.\n\nQ: Can I use multiple currencies?\nA: Yes! Add multiple currencies when creating your trip.\n\nQ: What is Trip Wrapped?\nA: A fun Spotify-style summary of your trip spending and stats.`
+  }
+};
+
+function showFooterModal(type) {
+  const data = footerContent[type];
+  document.getElementById('footerModalTitle').textContent = data.title;
+  document.getElementById('footerModalContent').innerHTML = data.content.replace(/\n/g, '<br>');
+  openModal('modal-footer');
+}
+
+// ===============================
+//  LANGUAGE (stub)
+// ===============================
+function showLangModal() { openModal('modal-lang'); }
+function setLang(lang) {
+  showToast(`Language set: ${lang}`);
+  closeModal('modal-lang');
+}
+
+// ===============================
+//  TAB SWITCHING
+// ===============================
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+tabId).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function setFabActive(btnId) {
+  document.querySelectorAll('.fab-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(btnId)?.classList.add('active');
+}
+
+// ===============================
+//  MODALS
+// ===============================
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ===============================
+//  TOAST
+// ===============================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===============================
+//  UTILS
+// ===============================
+function saveTrip() {
+  localStorage.setItem('evnly_trip', JSON.stringify(trip));
+}
+
+function formatCurrency(amount, currency) {
+  if (!amount) return `${currency || ''} 0`;
+  return `${currency || ''} ${amount.toLocaleString('en', {minimumFractionDigits:0, maximumFractionDigits:2})}`;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const date = new Date(d);
+  return date.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+}
+
+// ===============================
+//  INIT
+// ===============================
+window.addEventListener('DOMContentLoaded', () => {
+  if (!trip) trip = { currencies: ['HKD'], members: [], expenses: [], itinerary: {}, name: '' };
+  initCreatePage();
+
+  // If there's an existing trip, offer to resume
+  const saved = JSON.parse(localStorage.getItem('evnly_trip') || 'null');
+  if (saved && saved.name) {
+    trip = saved;
+    // Show resume option on landing page
+    const hero = document.querySelector('.cta-section');
+    hero.insertAdjacentHTML('beforeend', `
+      <div style="margin-top:20px;padding:16px;background:var(--white);border-radius:16px;border:2px solid var(--black);">
+        <div style="font-family:'Quicksand',sans-serif;font-weight:700;margin-bottom:8px;">Resume last trip: ${saved.name}</div>
+        <button class="btn-primary" style="width:100%;text-align:center;" onclick="goTo('page-dashboard')">Continue →</button>
+      </div>
+    `);
+  }
+});
+</script>
+</body>
+</html>
