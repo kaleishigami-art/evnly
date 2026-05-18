@@ -1,4 +1,3 @@
-<script>
 // ===============================
 //  STATE
 // ===============================
@@ -912,4 +911,3 @@ window.addEventListener('DOMContentLoaded', () => {
     `);
   }
 });
-</script>
