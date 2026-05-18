@@ -1,5 +1,4 @@
-<style>
-  :root {
+   :root {
     --cream: #F6F6E9;
     --yellow: #E8E6A5;
     --black: #111111;
@@ -55,7 +54,7 @@
 
   /* ============ TOPBAR ============ */
   .topbar {
-    background: var(--black);
+    background: var(--white);
     padding: 14px 20px;
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 100;
@@ -93,8 +92,19 @@
     background: var(--cream); border-radius: 16px;
     padding: 12px 28px; gap: 10px; margin-bottom: 32px;
   }
-  .hero-logo .logo-text { color: var(--cream); font-size: 32px; }
-  .hero-logo .logo-icon { width: 44px; height: 44px; font-size: 24px; background: var(--cream); color: var(--black); }
+  .hero-logo .logo-text { 
+    color: var(--black); 
+    font-size: 32px; }
+  .hero-logo .logo-icon { 
+    width: 44px; 
+    height: 44px; 
+    font-size: 28px; 
+    background: var(--black); 
+    color: var(--cream); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; }
   .hero-tagline {
     position: relative; z-index: 1;
     font-family: 'Quicksand', sans-serif;
@@ -761,4 +771,3 @@
   ::-webkit-scrollbar-thumb { background: var(--gray-mid); border-radius: 2px; }
 
   select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23111' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-</style>
